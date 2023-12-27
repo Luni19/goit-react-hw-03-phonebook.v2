@@ -3,6 +3,7 @@ import ContactList from "./ContactList/ContactList";
 import Filter from "./Filter/Filter";
 import ContactForm from "./ContactForm/ContactForm";
 import shortid from "shortid"
+import _isEqual from 'lodash/isEqual'
 
 class App extends Component {
   state = {
@@ -24,10 +25,10 @@ class App extends Component {
     }
   }
 
-  componentDidUpdate(prevState) {
+  componentDidUpdate(prevProps, prevState) {
     const { contacts } = this.state;
-
-    if (contacts !== prevState.contacts) {
+  
+    if (!_isEqual(contacts, prevState.contacts)) {
       console.log('contacts were updated');
       localStorage.setItem('contacts', JSON.stringify(contacts));
     }
@@ -46,10 +47,11 @@ class App extends Component {
       return;
     }
 
-    if (contacts.find(contact => contact.name === name)) {
+    if (contacts.find(contact => contact.name.toLowerCase() === name.toLowerCase())) {
       alert(`${name} is already in contacts.`);
       return;
     }
+    
 
     const newContact = {
       id: shortid.generate(),
